@@ -102,14 +102,20 @@ fn render(
             if en.name=="barbarian2"{
                 canvas.copy(&(entities_tex[1]),Rect::new(0,0,200,200) , Rect::new(en.x +950 -player.position.x,en.y+500-player.position.y,size,size));
             }
+            if en.name=="barbarianK"{
+                canvas.copy(&(entities_tex[2]),Rect::new(0,0,200,200) , Rect::new(en.x +950 -player.position.x,en.y+500-player.position.y,size,size));
+            }
+            if en.name=="hoplite"{
+                canvas.copy(&(entities_tex[9]),Rect::new(0,0,200,200) , Rect::new(en.x +950 -player.position.x,en.y+500-player.position.y,size,size));
+            }
         }
     }
     canvas.copy(texture, player.sprite, screen_rect)?;
-    if !animations.is_empty(){
-    for i in 0..animations.len()-1{
-    if !animations.is_empty() && animations[i].duration<=0{
+    
+    
+    if !animations.is_empty() && animations[0].duration<=0{
         animations.remove(0);
-    }}}
+    }
     for animation in animations{
         if animation.name == "slash" && animation.duration>0{
             canvas.copy(&(animationTex[0]), Rect::new(0,0,300,300), Rect::new(animation.x +950 -player.position.x,animation.y+500-player.position.y,size,size));
@@ -188,7 +194,7 @@ fn update_player(player: &mut Player,map:&String,ents:&mut Vec<Entities::Entity>
 
 }
 fn updateAI(entities:&mut Vec<Entities::Entity>,player: &mut Player,map:&String,animations:&mut Vec<Animation>){
-    let speed =2;
+    let speed =4;
     for ent in entities{
         let distance =  f64::sqrt((player.position.x - ent.x).pow(2) as f64 + (player.position.y - ent.y).pow(2) as f64);
         if distance <600.0{
@@ -322,11 +328,19 @@ fn main() -> Result<(), String> {
                             currentMap= map::Map::loadMap("l2".to_owned(),"levels/level2".to_owned());
                             entities=loadEntities(currentMap.name.clone());
                         }
+                        else if(currentMap.name.eq("l2")){
+                            currentMap= map::Map::loadMap("l3".to_owned(),"levels/level3".to_owned());
+                            entities=loadEntities(currentMap.name.clone());
+                        }
                     }
                     if(tile == 'u'){
                         //println!("inside if");
                         if(currentMap.name.eq("l2")){
                             currentMap= map::Map::loadMap("l1".to_owned(),"levels/level1".to_owned());
+                            entities=loadEntities(currentMap.name.clone());
+                        }
+                        else if(currentMap.name.eq("l3")){
+                            currentMap= map::Map::loadMap("l2".to_owned(),"levels/level2".to_owned());
                             entities=loadEntities(currentMap.name.clone());
                         }
                     }
@@ -369,7 +383,28 @@ fn loadEntities(map: String) -> Vec<Entities::Entity>{
             println!("{}",i);
             entities.push(Entities::Entity::new(params[0].to_string(), params[1].parse::<i32>().unwrap(), params[2].parse::<i32>().unwrap(), params[3].parse::<i32>().unwrap(),params[4].parse::<i32>().unwrap(),params[5].parse::<i32>().unwrap()));
         }
+    }
+        if map == "l2"{
+            let mut text:String=loadEnFile("levels/level2En".to_string());
+            println!("{}",text);
+            let lines : Vec<_> = text.split("\n").collect();
+            for i in lines{
+                let params:Vec<_> = i.split(" ").collect(); 
+                println!("{}",i);
+                entities.push(Entities::Entity::new(params[0].to_string(), params[1].parse::<i32>().unwrap(), params[2].parse::<i32>().unwrap(), params[3].parse::<i32>().unwrap(),params[4].parse::<i32>().unwrap(),params[5].parse::<i32>().unwrap()));
+            }
     } 
+
+    if map == "l3"{
+        let mut text:String=loadEnFile("levels/level3En".to_string());
+        println!("{}",text);
+        let lines : Vec<_> = text.split("\n").collect();
+        for i in lines{
+            let params:Vec<_> = i.split(" ").collect(); 
+            println!("{}",i);
+            entities.push(Entities::Entity::new(params[0].to_string(), params[1].parse::<i32>().unwrap(), params[2].parse::<i32>().unwrap(), params[3].parse::<i32>().unwrap(),params[4].parse::<i32>().unwrap(),params[5].parse::<i32>().unwrap()));
+        }
+} 
     return entities;
 }
 fn loadEnFile(path:String) -> String{
