@@ -11,7 +11,7 @@ use std::fs;
 use std::thread;
 
 
-const PLAYER_MOVEMENT_SPEED: i32 = 20;
+const PLAYER_MOVEMENT_SPEED: i32 = 40;
 
 mod map;
 mod Entities;
@@ -107,6 +107,9 @@ fn render(
             }
             if en.name=="hoplite"{
                 canvas.copy(&(entities_tex[9]),Rect::new(0,0,200,200) , Rect::new(en.x +950 -player.position.x,en.y+500-player.position.y,size,size));
+            }
+            if en.name=="darkMage"{
+                canvas.copy(&(entities_tex[4]),Rect::new(0,0,200,200) , Rect::new(en.x +950 -player.position.x,en.y+500-player.position.y,size,size));
             }
         }
     }
@@ -332,6 +335,10 @@ fn main() -> Result<(), String> {
                             currentMap= map::Map::loadMap("l3".to_owned(),"levels/level3".to_owned());
                             entities=loadEntities(currentMap.name.clone());
                         }
+                        else if(currentMap.name.eq("l3")){
+                            currentMap= map::Map::loadMap("l4".to_owned(),"levels/level4".to_owned());
+                            entities=loadEntities(currentMap.name.clone());
+                        }
                     }
                     if(tile == 'u'){
                         //println!("inside if");
@@ -341,6 +348,10 @@ fn main() -> Result<(), String> {
                         }
                         else if(currentMap.name.eq("l3")){
                             currentMap= map::Map::loadMap("l2".to_owned(),"levels/level2".to_owned());
+                            entities=loadEntities(currentMap.name.clone());
+                        }
+                        else if(currentMap.name.eq("l4")){
+                            currentMap= map::Map::loadMap("l3".to_owned(),"levels/level3".to_owned());
                             entities=loadEntities(currentMap.name.clone());
                         }
                     }
@@ -404,6 +415,20 @@ fn loadEntities(map: String) -> Vec<Entities::Entity>{
             println!("{}",i);
             entities.push(Entities::Entity::new(params[0].to_string(), params[1].parse::<i32>().unwrap(), params[2].parse::<i32>().unwrap(), params[3].parse::<i32>().unwrap(),params[4].parse::<i32>().unwrap(),params[5].parse::<i32>().unwrap()));
         }
+        
+
+} 
+if map == "l4"{
+    let mut text:String=loadEnFile("levels/level4En".to_string());
+    println!("{}",text);
+    let lines : Vec<_> = text.split("\n").collect();
+    for i in lines{
+        let params:Vec<_> = i.split(" ").collect(); 
+        println!("{}",i);
+        entities.push(Entities::Entity::new(params[0].to_string(), params[1].parse::<i32>().unwrap(), params[2].parse::<i32>().unwrap(), params[3].parse::<i32>().unwrap(),params[4].parse::<i32>().unwrap(),params[5].parse::<i32>().unwrap()));
+    }
+    
+
 } 
     return entities;
 }
